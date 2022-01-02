@@ -1,11 +1,14 @@
 #include <math.h>
 #include "TextureBuilder.h"
 #include "Model_3DS.h"
+#include <Camera.h>
+#include <Vector.h>
+#include <Vector3f.h>
 #include "GLTexture.h"
 #include <glut.h>
 #include <iostream>
 using namespace std;
-
+// salmaaaaaa
 int WIDTH = 1280;
 int HEIGHT = 720;
 double moveX = 0;
@@ -23,122 +26,9 @@ GLdouble fovy = 45.0;
 GLdouble aspectRatio = (GLdouble)WIDTH / (GLdouble)HEIGHT;
 GLdouble zNear = 0.1;
 GLdouble zFar = 100;
-class Vector
-{
-public:
-	GLdouble x, y, z;
-	Vector() {}
-	Vector(GLdouble _x, GLdouble _y, GLdouble _z) : x(_x), y(_y), z(_z) {}
-	//================================================================================================//
-	// Operator Overloading; In C++ you can override the behavior of operators for you class objects. //
-	// Here we are overloading the += operator to add a given value to all vector coordinates.        //
-	//================================================================================================//
-	void operator +=(float value)
-	{
-		x += value;
-		y += value;
-		z += value;
-	}
-};
-Vector Eye(20, 5, 20);
-Vector At(0, 0, 0);
-Vector Up(0, 1, 0);
-class Vector3f {
-public:
-	float x, y, z;
 
-	Vector3f(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) {
-		x = _x;
-		y = _y;
-		z = _z;
-	}
 
-	Vector3f operator+(Vector3f& v) {
-		return Vector3f(x + v.x, y + v.y, z + v.z);
-	}
 
-	Vector3f operator-(Vector3f& v) {
-		return Vector3f(x - v.x, y - v.y, z - v.z);
-	}
-
-	Vector3f operator*(float n) {
-		return Vector3f(x * n, y * n, z * n);
-	}
-
-	Vector3f operator/(float n) {
-		return Vector3f(x / n, y / n, z / n);
-	}
-
-	Vector3f unit() {
-		return *this / sqrt(x * x + y * y + z * z);
-	}
-
-	Vector3f cross(Vector3f v) {
-		return Vector3f(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
-	}
-};
-class Camera {
-public:
-	Vector3f eye, center, up;
-
-	Camera(float eyeX = 12.085f, float eyeY = 7.59875f, float eyeZ = 17.0245f, float centerX = 11.7239f, float centerY = 7.42656f, float centerZ = 16.108f, float upX = 0.0f, float upY = 1.0f, float upZ = 0.0f) {
-		eye = Vector3f(eyeX, eyeY, eyeZ);
-		center = Vector3f(centerX, centerY, centerZ);
-		up = Vector3f(upX, upY, upZ);
-	}
-
-	/*Camera(float eyeX = 0.02f, float eyeY = 0.02f, float eyeZ = 0.02f, float centerX = 2.4f, float centerY = 12.8166f, float centerZ = 38.4664f, float upX = 0.0f, float upY = 1.0f, float upZ = 0.0f) {
-		eye = Vector3f(eyeX, eyeY, eyeZ);
-		center = Vector3f(centerX, centerY, centerZ);
-		up = Vector3f(upX, upY, upZ);
-	}*/
-	//Camera(float eyeX = 0.0f, float eyeY = 2.0f, float eyeZ = 8.0f, float centerX = 0.0f, float centerY = 0.0f, float centerZ = 0.0f, float upX = 0.0f, float upY = 1.0f, float upZ = 0.0f) {
-	//	eye = Vector3f(eyeX, eyeY, eyeZ);
-	//	center = Vector3f(centerX, centerY, centerZ);
-	//	up = Vector3f(upX, upY, upZ);
-	//}
-
-	void moveX(float d) {
-		Vector3f right = up.cross(center - eye).unit();
-		eye = eye + right * d;
-		center = center + right * d;
-	}
-
-	void moveY(float d) {
-		eye = eye + up.unit() * d;
-		center = center + up.unit() * d;
-	}
-
-	void moveZ(float d) {
-		Vector3f view = (center - eye).unit();
-		eye = eye + view * d;
-		center = center + view * d;
-	}
-
-	void rotateX(float a) {
-		Vector3f view = (center - eye).unit();
-		Vector3f right = up.cross(view).unit();
-		view = view * cos(DEG2RAD(a)) + up * sin(DEG2RAD(a));
-		up = view.cross(right);
-		center = eye + view;
-	}
-
-	void rotateY(float a) {
-		Vector3f view = (center - eye).unit();
-		Vector3f right = up.cross(view).unit();
-		view = view * cos(DEG2RAD(a)) + right * sin(DEG2RAD(a));
-		right = view.cross(up);
-		center = eye + view;
-	}
-
-	void look() {
-		gluLookAt(
-			eye.x, eye.y, eye.z,
-			center.x, center.y, center.z,
-			up.x, up.y, up.z
-		);
-	}
-};
 Camera camera;
 int cameraZoom = 0;
 // Model Variables
