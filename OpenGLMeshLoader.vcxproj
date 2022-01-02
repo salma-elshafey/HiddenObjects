@@ -84,11 +84,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLTexture.cpp" />
+    <ClCompile Include="Level2.cpp" />
     <ClCompile Include="Model_3DS.cpp" />
     <ClCompile Include="OpenGLMeshLoader19.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLTexture.h" />
+    <ClInclude Include="Level2.h" />
     <ClInclude Include="Model_3DS.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
